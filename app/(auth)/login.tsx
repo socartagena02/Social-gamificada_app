@@ -42,7 +42,6 @@ export default function LoginScreen() {
           </Pressable>
         </Link>
         <Button title="Entrar" onPress={handleLogin}/>
-
       </View>
       <StatusBar />
     </View>
@@ -88,4 +87,9 @@ createAccount: {
   marginBottom: 10,
   fontSize: 14,
 },
+
+link: {
+  marginBottom: 10
+},
+
 });

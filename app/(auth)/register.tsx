@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
-import { router } from "expo-router";
+import { StyleSheet, Text, View, TextInput, Pressable, Button, Alert } from 'react-native';
+import { Link, router } from "expo-router";
 
 export default function RegisterScreen(){
   const [email, setEmail] = useState('');
@@ -9,14 +9,14 @@ export default function RegisterScreen(){
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = () =>{
-    if (!email || password) {
+    if (!email.trim() || !password || !confirmPassword) {
       Alert.alert('Error:', 'complete todos los datos.');
       return;
     } if(password !== confirmPassword) {
       Alert.alert('Error: ', 'Las contraseñas no coinciden.');
       return;
     }
-    router.push('/(app)/character');
+    router.push('/(app)/characterGenerator')
   }
 
   return (
@@ -51,7 +51,11 @@ export default function RegisterScreen(){
           style={styles.input}
           secureTextEntry
         />
-
+        <Link href="/(auth)/login">
+            <Pressable>
+              <Text style={styles.link}>¿Tienes cuenta?, inicia sesión</Text>
+            </Pressable>
+          </Link>
         <Button title="Crear personaje" onPress={handleRegister} />
       </View>
       <StatusBar />
@@ -98,4 +102,8 @@ createAccount: {
   marginBottom: 10,
   fontSize: 14,
 },
+link: {
+  marginBottom: 10
+}
+
 });
