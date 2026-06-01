@@ -1,14 +1,11 @@
-
-# dependencies
+# Node
 node_modules/
-
-# Expo
 .expo/
 dist/
 web-build/
+**/package-lock.json
+# Expo
 expo-env.d.ts
-
-# Native
 .kotlin/
 *.orig.*
 *.jks
@@ -16,27 +13,32 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
-
-# Metro
 .metro-health-check*
-
-# debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
 .env*.local
 
-# typescript
-*.tsbuildinfo
-
-# generated native folders
 /ios
 /android
+*.tsbuildinfo
 
-package-lock.json
+# Python
+backend/venv/
+backend/.venv/
+backend/__pycache__/
+**/*.py[cod]
+**/__pycache__/
+backend/*.pyc
+*db.sqlite3
+backend/.env
+backend/.env.local
+
+# Django
+*.log
+local_settings.py
+
+.DS_Store
+*.pem
+.idea/
+.vscode/
