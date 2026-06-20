@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 # Crear archivo .env
 # CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8081,http://192.26.78.103:8000
-# ALLOWED_HOSTS=localhost,127.0.0.1,192.26.78.103 
+# ALLOWED_HOSTS=localhost,127.0.0.1,X.X.X.X
 
 # Migraciones y ejecutar server
 cd social_gamificada
@@ -43,11 +43,11 @@ cd frontend
 npm install
 
 # Crear archivo .env con:
-# EXPO_PUBLIC_API=http://192.26.78.103:8000
+# EXPO_PUBLIC_API=http://X.X.X.X:8000
 
 npx expo start
 ```
-**Cambiar `192.26.78.103 por la IP actual**
+**Cambiar `X.X.X.X` por la IP actual**
 
 ## Flujo de uso
 
