@@ -2,21 +2,48 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Pressable, Button, Alert } from 'react-native';
 import { Link, router } from "expo-router";
+import * as SecureStore from 'expo-secure-store';
+
+const API_URL = process.env.EXPO_PUBLIC_API;
 
 export default function RegisterScreen(){
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = () =>{
+  const handleRegister = async () =>{
     if (!email.trim() || !password || !confirmPassword) {
       Alert.alert('Error:', 'complete todos los datos.');
       return;
-    } if(password !== confirmPassword) {
+    } 
+    if(password !== confirmPassword) {
       Alert.alert('Error: ', 'Las contraseñas no coinciden.');
       return;
     }
-    router.push('/(app)/characterGenerator')
+
+    setLoading(true);
+    try{
+      const response = await fetch(`${API_URL}/api/register/`,{
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email, password})
+      });
+      const data = await response.json();
+      
+      if (response.ok){
+        await SecureStore.setItemAsync('access_token', data.access);
+        await SecureStore.setItemAsync('refresh_token', data.refresh);
+        router.push('/(app)/characterGenerator')
+      } else {
+        Alert.alert('Error', data.error || 'No se pudo registrar');
+      }
+    } catch (error){
+      console.log('Error exacto:', error);
+      Alert.alert('Error', `${error}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -32,6 +59,7 @@ export default function RegisterScreen(){
           style={styles.input}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={!loading}
         />
 
         <Text style={styles.label}>Contraseña</Text>
@@ -41,6 +69,7 @@ export default function RegisterScreen(){
           onChangeText={setPassword}
           style={styles.input}
           secureTextEntry
+          editable={!loading}
         />
 
         <Text style={styles.label}>Confirmar contraseña</Text>
@@ -50,13 +79,14 @@ export default function RegisterScreen(){
           onChangeText={setConfirmPassword}
           style={styles.input}
           secureTextEntry
+          editable={!loading}
         />
         <Link href="/(auth)/login">
             <Pressable>
               <Text style={styles.link}>¿Tienes cuenta?, inicia sesión</Text>
             </Pressable>
           </Link>
-        <Button title="Crear personaje" onPress={handleRegister} />
+        <Button title={loading ? "Cargando..." : "Crear personaje"} onPress={handleRegister} disabled={loading} />
       </View>
       <StatusBar />
     </View>
@@ -70,40 +100,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 40,
-},
-
-formCard: {
-  width: '100%',
-  backgroundColor: '#FFF',
-  padding: 20,
-  paddingTop: 20,
-  borderRadius: 16,
-},
-title: {
-  fontSize: 24,
-  marginBottom: 20,
-  marginTop: 20,
-},
-
-input: {
-  borderWidth: 1,
-  padding: 12,
-  marginBottom: 15,
-  borderRadius: 8,
-  backgroundColor: '#FFF',
-},
-label: {
-  alignSelf: 'flex-start',
-  marginBottom: 5,
-  fontSize: 14,
-},
-
-createAccount: {
-  marginBottom: 10,
-  fontSize: 14,
-},
-link: {
-  marginBottom: 10
-}
-
+  },
+  formCard: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    padding: 20,
+    paddingTop: 20,
+    borderRadius: 16,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  input: {
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 15,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+  },
+  label: {
+    alignSelf: 'flex-start',
+    marginBottom: 5,
+    fontSize: 14,
+  },
+  link: {
+    marginBottom: 10
+  }
 });
