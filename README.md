@@ -28,10 +28,6 @@ venv\Scripts\activate
 # Dependencias
 pip install -r requirements.txt
 
-# Crear archivo .env
-# CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8081,http://192.26.78.103:8000
-# ALLOWED_HOSTS=localhost,127.0.0.1,X.X.X.X
-
 # Migraciones y ejecutar server
 cd social_gamificada
 python manage.py migrate
