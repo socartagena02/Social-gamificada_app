@@ -12,12 +12,18 @@ class ActivityType(models.Model):
 class Avatar(models.Model):
     avatar_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='avatar')
-    skin = models.CharField(max_length=8, default='default')
-    color1 = models.CharField(max_length=7, default='#FFFFFF')
+    nickname = models.CharField(max_length=50, unique=True)
+    rare = models.CharField(max_length=20, default="Común")
+    classes = models.CharField(max_length=50)
+    kingdom = models.CharField(max_length=50)
+    skin = models.CharField(max_length=10, default='default')
+    race = models.CharField(max_length=30)
+    color1 = models.CharField(max_length=7, default="#050404")
     color2 = models.CharField(max_length=7, default='#000000')
     accesorio = models.JSONField(default=list, blank=True)
     is_actived = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
+
     def __str__(self):
         return f"avatar de {self.user.username}"
     
