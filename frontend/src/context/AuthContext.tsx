@@ -7,6 +7,7 @@ interface AuthContextType {
     isLoading: boolean;
     isSignedIn: boolean;
     logout: () => Promise<void>;
+    login: (accessToken: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -14,6 +15,7 @@ export const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   isSignedIn: false,
   logout: async () => {},
+  login: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }){
@@ -33,6 +35,11 @@ export function AuthProvider({ children }: { children: ReactNode }){
     }
   };
 
+  
+  const login = (accessToken: string) => {
+    setToken(accessToken);
+  };
+
   const router = useRouter();
   const logout = async () => {
     await SecureStore.deleteItemAsync('access_token');
@@ -47,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }){
         token,
         isLoading,
         isSignedIn: !!token,
+        login,
         logout,
       }}
     >

@@ -1,12 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, Text, View, TextInput, Pressable, Button, Alert } from 'react-native';
 import { Link, router } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
+import { AuthContext } from "../../src/context/AuthContext";
 
 const API_URL = process.env.EXPO_PUBLIC_API;
 
 export default function LoginScreen() {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,7 +31,34 @@ export default function LoginScreen() {
       if (response.ok){
         await SecureStore.setItemAsync('access_token', data.access);
         await SecureStore.setItemAsync('refresh_token', data.refresh);
-        router.replace('/(app)/home');
+        
+        login(data.access);
+
+        const avatarResponse = await fetch(`${API_URL}/api/avatar/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${data.access}`,
+            Accept: 'application/json',
+          },
+        });
+
+        const responseText = await avatarResponse.text();
+
+        if (avatarResponse.status === 200){
+          router.replace('/(app)/home');
+
+        } else if (avatarResponse.status === 404) {
+            router.replace('/(app)/characterGenerator');
+        
+        } else if (avatarResponse.status === 401 || avatarResponse.status === 403){
+          Alert.alert(
+            'Error de autenticación',
+            `Estado: ${avatarResponse.status}. Revisa la respuesta de la API en la consola.`
+          );
+        } else {
+          Alert.alert('Error', `La consulta del avatar devolvió ${avatarResponse.status}.`);
+        }
+
       } else {
         Alert.alert('Error', data.error || 'Credenciales inválidas');
       }
